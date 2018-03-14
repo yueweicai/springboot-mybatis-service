@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.orilore.mapper.DeptMapper">
+	<resultMap type="Dept" id="deptMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+	</resultMap>
+	<resultMap type="Dept" id="deptResultMap" extends="deptMap">
+		<collection property="emps" ofType="Emp">
+			<id column="eid" property="id"/>
+			<result column="ename" property="name"/>
+			<result column="sex" property="sex"/>
+			<result column="birthday" property="birthday"/>
+			<result column="phone" property="phone"/>
+			<result column="addr" property="addr"/>
+		</collection>
+	</resultMap>
+	<select id="selectOne" parameterType="int" resultMap="deptResultMap">
+		select a.id,a.name,b.id eid,b.name ename,b.sex,b.birthday,b.phone,b.addr
+		from dept a left join emp b on a.id=b.deptid where a.id=#{0}
+	</select>
+	<select id="selectAll" resultMap="deptMap">
+		select * from dept where status!=-1
+	</select>
+	<insert id="insert" parameterType="Dept">
+		insert into dept(name) values(#{name})
+	</insert>	
+	<delete id="delete" parameterType="int">
+		update dept set status=-1 where id=#{0}
+	</delete>
+	<update id="update" parameterType="Dept">
+		update dept set name=#{name} where id=#{id}
+	</update>
+</mapper>
